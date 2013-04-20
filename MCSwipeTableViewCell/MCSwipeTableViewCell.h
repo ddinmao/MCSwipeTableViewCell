@@ -70,4 +70,6 @@ secondStateIconName:(NSString *)secondIconName
                fourthIconName:(NSString *)fourthIconName
                   fourthColor:(UIColor *)fourthColor;
 
+- (void)bounceToOrigin;
+
 @end

@@ -50,7 +50,7 @@ static NSTimeInterval const kMCDurationHightLimit = 0.1; // Highest duration whe
 
 - (void)moveWithDuration:(NSTimeInterval)duration andDirection:(MCSwipeTableViewCellDirection)direction;
 
-- (void)bounceToOrigin;
+- (void)bounceToOriginWithNotifyDelegate:(BOOL)willNotify;
 
 // Delegate
 - (void)notifyDelegate;
@@ -168,7 +168,7 @@ secondStateIconName:(NSString *)secondIconName
         if (_mode == MCSwipeTableViewCellModeExit && _direction != MCSwipeTableViewCellDirectionCenter && [self validateState:cellState])
             [self moveWithDuration:animationDuration andDirection:_direction];
         else
-            [self bounceToOrigin];
+            [self bounceToOriginWithNotifyDelegate:YES];
     }
 }
 
@@ -438,7 +438,12 @@ secondStateIconName:(NSString *)secondIconName
                      }];
 }
 
-- (void)bounceToOrigin {
+- (void)bounceToOrigin
+{
+    [self bounceToOriginWithNotifyDelegate:NO];
+}
+
+- (void)bounceToOriginWithNotifyDelegate:(BOOL)willNotify {
     CGFloat bounceDistance = kMCBounceAmplitude * _currentPercentage;
 
     [UIView animateWithDuration:kMCBounceDuration1
@@ -462,7 +467,7 @@ secondStateIconName:(NSString *)secondIconName
                                               [self.contentView setFrame:frame];
                                           }
                                           completion:^(BOOL finished2) {
-                                              [self notifyDelegate];
+                                              if (willNotify) [self notifyDelegate];
                                           }];
                      }];
 }
