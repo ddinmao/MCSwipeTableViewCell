@@ -43,6 +43,7 @@ typedef NS_ENUM(NSUInteger, MCSwipeTableViewCellMode){
 @property(nonatomic, copy) NSString *thirdIconName;
 @property(nonatomic, copy) NSString *fourthIconName;
 
+@property(nonatomic, strong) UIColor *initialColor;
 @property(nonatomic, strong) UIColor *firstColor;
 @property(nonatomic, strong) UIColor *secondColor;
 @property(nonatomic, strong) UIColor *thirdColor;

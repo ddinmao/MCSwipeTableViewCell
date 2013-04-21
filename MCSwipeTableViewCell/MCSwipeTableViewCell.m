@@ -180,7 +180,9 @@ secondStateIconName:(NSString *)secondIconName
         CGPoint translation = [(UIPanGestureRecognizer *) gestureRecognizer translationInView:superview];
 
         // Make sure it is scrolling horizontally
-        return ((fabs(translation.x) / fabs(translation.y) > 1) ? YES : NO && (superview.contentOffset.y == 0.0 && superview.contentOffset.x == 0.0));
+        return (((translation.x > 0 && _firstIconName.isPresent) || (translation.x < 0 && _thirdIconName.isPresent)) &&
+                (fabs(translation.x) / fabs(translation.y) > 1) ? YES : NO &&
+                (superview.contentOffset.y == 0.0 && superview.contentOffset.x == 0.0));
     }
     return NO;
 }
@@ -266,7 +268,7 @@ secondStateIconName:(NSString *)secondIconName
     else if (percentage <= -kMCStop2)
         color = _fourthColor;
     else
-        color = [UIColor clearColor];
+        color = _initialColor;
 
     return color;
 }
