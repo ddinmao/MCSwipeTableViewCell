@@ -57,6 +57,7 @@ static NSTimeInterval const kMCDurationHightLimit = 0.1; // Highest duration whe
 
 @property(nonatomic, assign) MCSwipeTableViewCellDirection direction;
 @property(nonatomic, assign) CGFloat currentPercentage;
+@property(nonatomic, assign) BOOL cancelSwipe;
 
 @property(nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
 @property(nonatomic, strong) UIImageView *slidingImageView;
@@ -159,13 +160,15 @@ secondStateIconName:(NSString *)secondIconName
         [self.contentView setCenter:center];
         [self animateWithOffset:CGRectGetMinX(self.contentView.frame)];
         [gesture setTranslation:CGPointZero inView:self];
+        
+        _cancelSwipe = ((translation.x < 0 && percentage > 0) || (translation.x > 0 && percentage < 0));
     }
     else if (state == UIGestureRecognizerStateEnded || state == UIGestureRecognizerStateCancelled) {
         _currentImageName = [self imageNameWithPercentage:percentage];
         _currentPercentage = percentage;
         MCSwipeTableViewCellState cellState= [self stateWithPercentage:percentage];
 
-        if (_mode == MCSwipeTableViewCellModeExit && _direction != MCSwipeTableViewCellDirectionCenter && [self validateState:cellState])
+        if (_mode == MCSwipeTableViewCellModeExit && _direction != MCSwipeTableViewCellDirectionCenter && [self validateState:cellState] && !_cancelSwipe)
             [self moveWithDuration:animationDuration andDirection:_direction];
         else
             [self bounceToOriginWithNotifyDelegate:YES];
@@ -259,7 +262,9 @@ secondStateIconName:(NSString *)secondIconName
     UIColor *color;
 
     // Background Color
-    if (percentage >= kMCStop1 && percentage < kMCStop2)
+    if (_cancelSwipe)
+        color = _initialColor;
+    else if (percentage >= kMCStop1 && percentage < kMCStop2)
         color = _firstColor;
     else if (percentage >= kMCStop2)
         color = _secondColor;
@@ -479,7 +484,7 @@ secondStateIconName:(NSString *)secondIconName
 - (void)notifyDelegate {
     MCSwipeTableViewCellState state = [self stateWithPercentage:_currentPercentage];
 
-    if (state != MCSwipeTableViewCellStateNone) {
+    if (state != MCSwipeTableViewCellStateNone && !_cancelSwipe) {
         if (_delegate != nil && [_delegate respondsToSelector:@selector(swipeTableViewCell:didTriggerState:withMode:)]) {
             [_delegate swipeTableViewCell:self didTriggerState:state withMode:_mode];
         }
