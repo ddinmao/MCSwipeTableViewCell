@@ -161,7 +161,7 @@ secondStateIconName:(NSString *)secondIconName
         [self animateWithOffset:CGRectGetMinX(self.contentView.frame)];
         [gesture setTranslation:CGPointZero inView:self];
         
-        _cancelSwipe = ((translation.x < 0 && percentage > 0) || (translation.x > 0 && percentage < 0));
+        _cancelSwipe = ((velocity.x <= 0 && percentage > 0) || (velocity.x >= 0 && percentage < 0));
     }
     else if (state == UIGestureRecognizerStateEnded || state == UIGestureRecognizerStateCancelled) {
         _currentImageName = [self imageNameWithPercentage:percentage];
