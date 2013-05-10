@@ -67,6 +67,9 @@ static NSTimeInterval const kMCDurationHightLimit = 0.1; // Highest duration whe
 @end
 
 @implementation MCSwipeTableViewCell
+{
+    BOOL _needLayoutSubviews;
+}
 
 #pragma mark - Initialization
 
@@ -96,6 +99,14 @@ static NSTimeInterval const kMCDurationHightLimit = 0.1; // Highest duration whe
     }
 
     return self;
+}
+
+-(void) layoutSubviews {
+    // TODO: what has layoutSubviews done ???!!!
+    // TODO: the hack can make SWIPE work
+    if (_needLayoutSubviews) {
+        [super layoutSubviews];
+    }
 }
 
 #pragma mark Custom Initializer
@@ -128,6 +139,7 @@ secondStateIconName:(NSString *)secondIconName
 
 - (void)initializer {
     _mode = MCSwipeTableViewCellModeSwitch;
+    _needLayoutSubviews = YES;
 
     _colorIndicatorView = [[UIView alloc] initWithFrame:self.bounds];
     [_colorIndicatorView setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth];
@@ -154,6 +166,7 @@ secondStateIconName:(NSString *)secondIconName
     _direction = [self directionWithPercentage:percentage];
 
     if (state == UIGestureRecognizerStateBegan) {
+        _needLayoutSubviews = NO;
     }
     else if (state == UIGestureRecognizerStateBegan || state == UIGestureRecognizerStateChanged) {
         CGPoint center = {self.contentView.center.x + translation.x, self.contentView.center.y};
@@ -442,11 +455,13 @@ secondStateIconName:(NSString *)secondIconName
                      }
                      completion:^(BOOL finished) {
                          [self notifyDelegate];
+                         _needLayoutSubviews = YES;
                      }];
 }
 
 - (void)bounceToOrigin
 {
+    _needLayoutSubviews = NO;
     [self bounceToOriginWithNotifyDelegate:NO];
 }
 
@@ -475,6 +490,7 @@ secondStateIconName:(NSString *)secondIconName
                                           }
                                           completion:^(BOOL finished2) {
                                               if (willNotify) [self notifyDelegate];
+                                              _needLayoutSubviews = YES;
                                           }];
                      }];
 }
