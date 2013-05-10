@@ -382,29 +382,30 @@ secondStateIconName:(NSString *)secondIconName
     CGPoint position = CGPointZero;
 
     position.y = CGRectGetHeight(self.bounds) / 2.0;
-
+    CGFloat slidingStartX = 0.3;
+    
     if (isDragging) {
-        if (percentage >= 0 && percentage < kMCStop1) {
-            position.x = [self offsetWithPercentage:(kMCStop1 / 2) relativeToWidth:CGRectGetWidth(self.bounds)];
+        if (percentage >= 0 && percentage < slidingStartX) {
+            position.x = [self offsetWithPercentage:(slidingStartX / 2) relativeToWidth:CGRectGetWidth(self.bounds)];
         }
 
-        else if (percentage >= kMCStop1) {
-            position.x = [self offsetWithPercentage:percentage - (kMCStop1 / 2) relativeToWidth:CGRectGetWidth(self.bounds)];
+        else if (percentage >= slidingStartX) {
+            position.x = [self offsetWithPercentage:percentage - (slidingStartX / 2) relativeToWidth:CGRectGetWidth(self.bounds)];
         }
-        else if (percentage < 0 && percentage >= -kMCStop1) {
-            position.x = CGRectGetWidth(self.bounds) - [self offsetWithPercentage:(kMCStop1 / 2) relativeToWidth:CGRectGetWidth(self.bounds)];
+        else if (percentage < 0 && percentage >= -slidingStartX) {
+            position.x = CGRectGetWidth(self.bounds) - [self offsetWithPercentage:(slidingStartX / 2) relativeToWidth:CGRectGetWidth(self.bounds)];
         }
 
-        else if (percentage < -kMCStop1) {
-            position.x = CGRectGetWidth(self.bounds) + [self offsetWithPercentage:percentage + (kMCStop1 / 2) relativeToWidth:CGRectGetWidth(self.bounds)];
+        else if (percentage < -slidingStartX) {
+            position.x = CGRectGetWidth(self.bounds) + [self offsetWithPercentage:percentage + (slidingStartX / 2) relativeToWidth:CGRectGetWidth(self.bounds)];
         }
     }
     else {
         if (_direction == MCSwipeTableViewCellDirectionRight) {
-            position.x = [self offsetWithPercentage:percentage - (kMCStop1 / 2) relativeToWidth:CGRectGetWidth(self.bounds)];
+            position.x = [self offsetWithPercentage:percentage - (slidingStartX / 2) relativeToWidth:CGRectGetWidth(self.bounds)];
         }
         else if (_direction == MCSwipeTableViewCellDirectionLeft) {
-            position.x = CGRectGetWidth(self.bounds) + [self offsetWithPercentage:percentage + (kMCStop1 / 2) relativeToWidth:CGRectGetWidth(self.bounds)];
+            position.x = CGRectGetWidth(self.bounds) + [self offsetWithPercentage:percentage + (slidingStartX / 2) relativeToWidth:CGRectGetWidth(self.bounds)];
         }
         else {
             return;
