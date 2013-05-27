@@ -57,6 +57,7 @@ static NSTimeInterval const kMCDurationHightLimit = 0.1; // Highest duration whe
 
 @property(nonatomic, assign) MCSwipeTableViewCellDirection direction;
 @property(nonatomic, assign) CGFloat currentPercentage;
+@property(nonatomic, assign) CGFloat maxPercentage;
 @property(nonatomic, assign) BOOL cancelSwipe;
 
 @property(nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
@@ -173,8 +174,11 @@ secondStateIconName:(NSString *)secondIconName
         [self.contentView setCenter:center];
         [self animateWithOffset:CGRectGetMinX(self.contentView.frame)];
         [gesture setTranslation:CGPointZero inView:self];
-        
-        _cancelSwipe = ((velocity.x <= 0 && percentage > 0) || (velocity.x >= 0 && percentage < 0));
+
+        if (fabs(_maxPercentage - percentage) > 0.05) {
+            _cancelSwipe = (velocity.x <= 0 && percentage > 0) || (velocity.x >= 0 && percentage < 0);
+            _maxPercentage = percentage;
+        }
     }
     else if (state == UIGestureRecognizerStateEnded || state == UIGestureRecognizerStateCancelled) {
         _currentImageName = [self imageNameWithPercentage:percentage];
